@@ -7,9 +7,41 @@
         <groupId>com.bistu</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>service_gateway</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.bistu</groupId>
+            <artifactId>model</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.bistu</groupId>
+            <artifactId>common_util</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- 服务注册 -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <version>2.2.1.RELEASE</version>
+        </dependency>
+        <!-- Spring Cloud -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+            <version>2.2.1.RELEASE</version>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.alibaba.cloud</groupId>-->
+<!--            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>-->
+<!--            <version>2.2.1.RELEASE</version>-->
+<!--        </dependency>-->
+    </dependencies>
 
     <build>
         <plugins>
@@ -21,7 +53,7 @@
 
         <resources>
             <resource>
-                <directory>src/main/java/resources</directory>
+                <directory>src/main/resources</directory>
                 <includes>
                     <include>**/*.yaml</include>
                     <include>**/*.properties</include>
@@ -31,6 +63,5 @@
             </resource>
         </resources>
     </build>
-
 
 </project>

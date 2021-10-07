@@ -22,7 +22,15 @@
             <artifactId>model</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.bistu</groupId>
+            <artifactId>service_equip_client</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
+
+
 
     <build>
         <plugins>

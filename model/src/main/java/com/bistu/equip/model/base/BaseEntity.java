@@ -1,10 +1,7 @@
 package com.bistu.equip.model.base;
 
 import com.alibaba.excel.annotation.format.DateTimeFormat;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -29,13 +26,13 @@ public class BaseEntity implements Serializable {
 	@ApiModelProperty(value = "创建时间")
 	@DateTimeFormat("yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@TableField("create_time")
+	@TableField(value = "create_time", fill = FieldFill.INSERT)
 	private Date createTime;
 	
 	@ApiModelProperty(value = "更新时间")
 	@DateTimeFormat("yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(pattern = "yyyy-MM-DD HH:mm:ss")
-	@TableField("update_time")
+	@TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
 	private Date updateTime;
 
 	@ApiModelProperty(value = "其他参数")

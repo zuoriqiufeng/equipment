@@ -1,5 +1,6 @@
 package com.bistu.equip.model.user;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -24,14 +25,22 @@ import java.util.Date;
 public class UserInfo extends BaseEntity {
 	
 	@ApiModelProperty("微信编号")
-	@TableField("wx_id")
-	private String wxId;
+	@TableField("open_id")
+	private String openId;
+
+	@ApiModelProperty("认证状态（0：未认证 1：已认证）")
+	@TableField(value = "auth_status", fill = FieldFill.INSERT)
+	private Integer authStatus;
 	
-	@ApiModelProperty("用户名")
+	@ApiModelProperty("姓名")
 	@TableField("name")
 	private String name;
 	
-	@ApiModelProperty("性别")
+	@ApiModelProperty("用户名")
+	@TableField("nick_name")
+	private String nickName;
+	
+	@ApiModelProperty("性别 (0:女  1:男)")
 	@TableField("sex")
 	private Integer sex;
 	
@@ -39,12 +48,12 @@ public class UserInfo extends BaseEntity {
 	@TableField("phone")
 	private String phone;
 	
-	@ApiModelProperty("身份（0：学生 1：老师）")
-	@TableField("identity")
+	@ApiModelProperty("身份（0：学生 1：教职人员）")
+	@TableField(value = "identity", fill = FieldFill.INSERT)
 	private Integer identity;
 	
 	@ApiModelProperty("账户类型 (0：普通用户 1：管理员)")
-	@TableField("account_type")
+	@TableField(value = "account_type", fill = FieldFill.INSERT)
 	private Integer accountType;
 	
 	@ApiModelProperty("学院")
@@ -67,24 +76,12 @@ public class UserInfo extends BaseEntity {
 	@TableField("grade")
 	private String grade;
 	
-	@ApiModelProperty("职称")
-	@TableField("position")
-	private String position;
-	
 	@ApiModelProperty("班级")
 	@TableField("class")
 	private String schoolClass;
 	
-	@ApiModelProperty("校内邮箱")
-	@TableField("school_email")
-	private String schoolEmail;
-	
-	@ApiModelProperty("校内邮箱")
-	@TableField("usual_email")
-	private String usualEmail;
-	
 	@ApiModelProperty("状态(0：禁用 1：未禁用)")
-	@TableField("status")
+	@TableField(value = "status", fill = FieldFill.INSERT)
 	private Integer status;
 	
 	@ApiModelProperty("上次登录时间")

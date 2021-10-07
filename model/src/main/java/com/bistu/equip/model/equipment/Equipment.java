@@ -3,11 +3,13 @@ package com.bistu.equip.model.equipment;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import com.baomidou.mybatisplus.annotation.Version;
 import com.bistu.equip.model.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.Date;
 
@@ -19,6 +21,7 @@ import java.util.Date;
 @Data
 @ApiModel(description = "equipment")
 @TableName("equipment")
+@ToString
 public class Equipment extends BaseEntity {
 	@ApiModelProperty(value = "设备编号")
 	@TableField("device_Id")
@@ -48,6 +51,10 @@ public class Equipment extends BaseEntity {
 	@TableField("type")
 	private Integer type;
 	
+	@ApiModelProperty(value = "设备状态(0:空闲 1：使用中 2：已损坏)")
+	@TableField("status")
+	private Integer status;
+	
 	@ApiModelProperty(value = "采购日期")
 	@TableField("buy_date")
 	@JsonFormat(pattern = "yyyy-MM-dd")
@@ -60,10 +67,6 @@ public class Equipment extends BaseEntity {
 	@ApiModelProperty(value = "项目号")
 	@TableField("item_no")
 	private String itemNo;
-	
-	@ApiModelProperty(value = "设备状态(0:空闲 1：使用中 2：已损坏 3：正在维修)")
-	@TableField("status")
-	private Integer status;
 	
 	@ApiModelProperty(value = "资产系统_验收单编号")
 	@TableField("EAM_receipt_no")
@@ -103,13 +106,13 @@ public class Equipment extends BaseEntity {
 	
 	@ApiModelProperty(value = "资产系统_记账日期")
 	@TableField("EAM_charge_date")
-	private String eAmChargeDate;
+	private Date eAmChargeDate;
 	
 	@ApiModelProperty(value = "资产系统_具体位置")
 	@TableField("EAM_definite_area")
 	private String eAmDefiniteArea;
 	
-	
-	
-	
+//	@Version
+//	@TableField
+//	private Integer version;
 }

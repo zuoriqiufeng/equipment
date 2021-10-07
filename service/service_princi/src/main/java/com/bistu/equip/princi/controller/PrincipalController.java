@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Dx666
@@ -30,14 +32,29 @@ public class PrincipalController {
 	
 	
 	@ApiOperation("获取借用情况列表")
-	@PostMapping("list/{page}/{limit}")
+	@GetMapping("list/{page}/{limit}")
 	public Result getPagePrincipal(@PathVariable("page") Long page,
 	                               @PathVariable("limit") Long limit,
 	                               PrincipalQueryVo principalQueryVo) {
 		Page<PrincipalInfo> pageParam = new Page<>(page, limit);
 		IPage<PrincipalInfo> pageModel = principalService.selectPage(pageParam, principalQueryVo);
-		
 		return Result.ok(pageModel);
 	}
 	
+	
+	@ApiOperation("删除记录")
+	@DeleteMapping("remove/{id}")
+	public Result removeDataById(@PathVariable Long id) {
+		boolean flag = principalService.removeById(id);
+		if(flag) {
+			return Result.ok();
+		}
+		return Result.fail();
+	}
+	
+	@GetMapping("all")
+	public Result getAllData() {
+		List<PrincipalInfo> results = principalService.getAllInfo();
+		return Result.ok(results);
+	}
 }

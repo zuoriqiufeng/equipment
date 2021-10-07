@@ -2,16 +2,20 @@ package com.bistu.equip.user.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.bistu.equip.common.helper.JwtHelper;
 import com.bistu.equip.common.result.Result;
 
 import com.bistu.equip.model.user.UserInfo;
+import com.bistu.equip.model.user.userUpdate.UserUpdateModel;
 import com.bistu.equip.user.service.UserInfoService;
 import com.bistu.equip.vo.user.UserInfoQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -35,15 +39,14 @@ public class UserController {
 	public Result getUserPage(@PathVariable("page") Long page,
 	                           @PathVariable("limit") Long limit,
 	                           UserInfoQueryVo userInfoQueryVo) {
-		
 		Page<UserInfo> pageParam = new Page<>(page, limit);
 		IPage<UserInfo> pageModel = userInfoService.selectPage(pageParam, userInfoQueryVo);
 		return Result.ok(pageModel);
 	}
 	
 	@ApiOperation("删除用户")
-	@DeleteMapping("{id}")
-	public Result deleteById(@PathVariable Integer id) {
+	@GetMapping("delete/{id}")
+	public Result deleteById(@PathVariable Long id) {
 		boolean flag = userInfoService.removeById(id);
 		if(flag) {
 			return Result.ok();
@@ -70,8 +73,8 @@ public class UserController {
 	 * @return
 	 */
 	@ApiOperation("修改用户状态")
-	@PutMapping("lockUser/{id}/{status}")
-	public Result lockUser(@PathVariable Integer id,
+	@GetMapping("lockUser/{id}/{status}")
+	public Result lockUser(@PathVariable Long id,
 	                       @PathVariable Integer status) {
 		// 先查询
 		UserInfo user = userInfoService.getById(id);
@@ -79,6 +82,33 @@ public class UserController {
 		user.setStatus(status);
 		// 修改表
 		userInfoService.updateById(user);
+		return Result.ok();
+	}
+	
+	@ApiOperation("后台登录操作")
+	@PostMapping("login")
+	public Result login(
+			@RequestParam(value = "username", defaultValue = "admin") String username,
+			@RequestParam(value = "password", defaultValue = "123456") String password) {
+		if("admin".equals(username) && "123456".equals(password)) {
+			String token = JwtHelper.createToken(132456L, "admin");
+			HashMap<String, String> map = new HashMap<>();
+			map.put("token", token);
+			map.put("name", username);
+			return Result.ok(map);
+		}
+		return Result.fail();
+	}
+	
+	@ApiOperation("修改用户信息")
+	@PostMapping("updateInfo")
+	public Result updateById(@RequestBody UserUpdateModel updateInfo) {
+		// 先对字符串进行转换
+		UserInfo userInfo = new UserInfo();
+		userInfo.setAccountType(updateInfo.getAccountType());
+		userInfo.setIdentity(updateInfo.getIdentity());
+		userInfo.setId(updateInfo.getId());
+		userInfoService.updateById(userInfo);
 		return Result.ok();
 	}
 	

@@ -11,12 +11,8 @@ import lombok.Data;
  */
 @Data
 public class PrincipalQueryVo {
-	
-	@ApiModelProperty("用户编号")
-	private Integer uId;
-	
-	@ApiModelProperty("设备号")
-	private Integer equipId;
+	@ApiModelProperty("用户id")
+	private Long uid;
 	
 	@ApiModelProperty("用户名")
 	private String userName;

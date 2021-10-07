@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 
 import com.bistu.equip.model.user.UserInfo;
+import com.bistu.equip.vo.auth.UserAuthVo;
 import com.bistu.equip.vo.user.UserInfoQueryVo;
 
 /**
@@ -18,4 +19,10 @@ public interface UserInfoService  extends IService<UserInfo> {
 	
 	// 分页查询用户
 	IPage<UserInfo> selectPage(Page<UserInfo> pageParam, UserInfoQueryVo userInfoQueryVo);
+	
+	// 通过openid查询用户信息
+	UserInfo selectWxInfoOpenId(String openid);
+	
+	// 用户认证接口
+	void userAuth(Long userId, UserAuthVo userAuthVo);
 }

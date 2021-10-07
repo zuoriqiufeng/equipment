@@ -1,7 +1,9 @@
 package com.bistu.equip.model.principal;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.bistu.equip.model.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -19,19 +21,23 @@ import java.util.Map;
 @Data
 @ApiModel(description = "equip_principal")
 @TableName("equip_principal")
-public class PrincipalInfo {
+public class PrincipalInfo extends BaseEntity {
 	
 	@ApiModelProperty("用户编号")
 	@TableField("uid")
-	private Integer uId;
+	private Long uid;
 	
 	@ApiModelProperty("设备号")
 	@TableField("equip_id")
-	private Integer equipId;
+	private Long equipId;
+	
+	@ApiModelProperty("是否归还（0：未归还，1：已归还）")
+	@TableField("status")
+	private Integer status;
 	
 	@ApiModelProperty("用户名")
 	@TableField("user_name")
-	private String userName;
+	private String username;
 	
 	@ApiModelProperty("设备名")
 	@TableField("equip_name")
@@ -49,6 +55,11 @@ public class PrincipalInfo {
 	@TableField("le_human_sign")
 	private byte[] leHumanSign;
 	
+	
+	@ApiModelProperty("老师姓名")
+	@TableField("teacher_name")
+	private String tecName;
+	
 	@ApiModelProperty("老师签字")
 	@TableField("teacher_sign")
 	private byte[] tecSign;
@@ -63,7 +74,7 @@ public class PrincipalInfo {
 	
 	@ApiModelProperty("借出时间")
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	@TableField("lend_time")
+	@TableField(value = "lend_time", fill = FieldFill.INSERT)
 	private Date lendTime;
 	
 	@ApiModelProperty("返还时间")
@@ -72,21 +83,11 @@ public class PrincipalInfo {
 	private Date returnTime;
 	
 	@ApiModelProperty("借用时长")
-	@TableField("borrow_time")
+	@TableField(value = "borrow_time")
 	private Integer borrowTime;
 	
-	@ApiModelProperty(value = "创建时间")
-	@JsonFormat(pattern = "yyyy-MM-DD HH:mm:ss")
-	@TableField("create_time")
-	private Date createTime;
+	@ApiModelProperty("归还倒计时")
+	@TableField(value = "return_count")
+	private Integer returnCount;
 	
-	@ApiModelProperty(value = "更新时间")
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-	@TableField("update_time")
-	private Date updateTime;
-	
-	@ApiModelProperty(value = "其他参数")
-	@TableField(exist = false)
-	private Map<String, Object> param = new HashMap<>();
-
 }

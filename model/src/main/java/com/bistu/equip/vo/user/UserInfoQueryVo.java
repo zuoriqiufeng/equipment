@@ -14,8 +14,14 @@ import lombok.Data;
 @ApiModel(description = "用户查询对象")
 public class UserInfoQueryVo {
 	
-	@ApiModelProperty(value = "状态")
+	@ApiModelProperty("用户名")
+	private String name;
+	
+	@ApiModelProperty("状态")
 	private Integer status;
+	
+	@ApiModelProperty("性别")
+	private Integer sex;
 	
 	@ApiModelProperty("身份（0：学生 1：老师）")
 	private Integer identity;
@@ -23,16 +29,15 @@ public class UserInfoQueryVo {
 	@ApiModelProperty("账户类型 (0：普通用户 1：管理员)")
 	private Integer accountType;
 	
+	@ApiModelProperty("认证状态(0：未认证 1：已认证)")
+	private Integer authStatus;
+	
 	@ApiModelProperty("学院")
 	private String college;
 	
 	@ApiModelProperty("工号/学号")
 	private String no;
 	
-	@ApiModelProperty("系部")
+	@ApiModelProperty("系部/专业")
 	private String dept;
-	
-	@ApiModelProperty("专业")
-	private String major;
-	
 }

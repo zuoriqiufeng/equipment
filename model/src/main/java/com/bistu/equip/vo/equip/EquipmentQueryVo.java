@@ -14,21 +14,9 @@ import java.util.Date;
 @Data
 @ApiModel(description = "搜索对象")
 public class EquipmentQueryVo {
-
-	@ApiModelProperty(value = "设备编号")
-	private String deviceId;
 	
 	@ApiModelProperty(value = "设备名称")
 	private String  name;
-	
-	@ApiModelProperty(value = "品牌名")
-	private String brandName;
-	
-	@ApiModelProperty(value = "价格")
-	private Double price;
-
-	@ApiModelProperty(value = "采购日期")
-	private Date buyDate;
 	
 	@ApiModelProperty(value = "类型(0: 个人设备 1: 未入库设备 2: 已入库设备)")
 	private Integer type;
@@ -36,7 +24,5 @@ public class EquipmentQueryVo {
 	@ApiModelProperty(value = "设备状态(0:空闲 1：使用中 2：已损坏 3：正在维修)")
 	private Integer status;
 	
-	@ApiModelProperty(value = "项目号")
-	private String itemNo;
 }
 
