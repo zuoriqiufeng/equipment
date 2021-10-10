@@ -64,6 +64,7 @@ public class EquipmentController {
 	@ApiOperation("删除设备")
 	@DeleteMapping("{id}")
 	public Result deleteById(@PathVariable Integer id) {
+		log.info("删除设备......");
 		boolean flag = equipmentService.removeById(id);
 		if(flag) {
 			return Result.ok();
@@ -83,6 +84,7 @@ public class EquipmentController {
 	@PutMapping("modifyStatus/{id}/{status}")
 	public Result modifyStatus(@PathVariable("id") Long id,
 	                           @PathVariable("status") Integer status) {
+		log.info("修改设备状态");
 		Equipment equipment = equipmentService.getById(id);
 		equipment.setStatus(status);
 		equipmentService.updateById(equipment);
@@ -99,6 +101,7 @@ public class EquipmentController {
 	@ApiOperation("批量导入设备信息")
 	@PostMapping("importData")
 	public Result importEquip(MultipartFile file){
+		log.info("导入设备数据");
 		equipmentService.importEquipData(file);
 		return Result.ok();
 	}

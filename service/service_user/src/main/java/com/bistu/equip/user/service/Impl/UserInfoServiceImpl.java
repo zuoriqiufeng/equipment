@@ -12,6 +12,7 @@ import com.bistu.equip.user.mapper.UserInfoMapper;
 import com.bistu.equip.user.service.UserInfoService;
 import com.bistu.equip.vo.auth.UserAuthVo;
 import com.bistu.equip.vo.user.UserInfoQueryVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -22,6 +23,7 @@ import java.util.Date;
  * @Description
  * @Date 2021/7/31 - 14:41
  */
+@Slf4j
 @Service
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
 	
@@ -103,8 +105,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 		userInfo.setNo(userAuthVo.getNo());
 		userInfo.setPhone(userAuthVo.getPhone());
 		userInfo.setSex(userAuthVo.getSex());
-//		userInfo.setUpdateTime(new Date());
-		
 		baseMapper.updateById(userInfo);
 	}
 	
@@ -115,13 +115,18 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 	 * @param userInfo
 	 */
 	private void packageUserInfo(UserInfo userInfo) {
-		
+		log.info("在查询时,包装用户信息.....");
 		// 处理用户状态编码
-		String statusString = userInfo.getStatus() == 0 ? "禁用" : "正常";
+		String authStatus = "";
+		String sexString = "";
+		if(userInfo.getAuthStatus() == 0) {
+			authStatus =  "未认证";
+		} else {
+			sexString = userInfo.getSex() == 0 ? "女" : "男";
+		}
 		String accountType = userInfo.getAccountType() == 0 ? "普通用户" : "管理员";
 		String identityString = userInfo.getIdentity() == 0 ? "学生" : "教职人员";
-		String authStatus = userInfo.getAuthStatus() == 0 ? "未认证" : "已认证";
-		String sexString = userInfo.getSex() == 0 ? "女" : "男";
+		String statusString = userInfo.getStatus() == 0 ? "禁用" : "正常";
 		userInfo.getParam().put("identityString", identityString);
 		userInfo.getParam().put("accountType", accountType);
 		userInfo.getParam().put("statusString", statusString);

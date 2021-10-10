@@ -7,6 +7,7 @@ import com.bistu.equip.princi.service.PrincipalService;
 import com.bistu.equip.vo.principal.PrincipalQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import java.util.List;
  * @Description
  * @Date 2021/8/8 - 16:47
  */
+@Slf4j
 @Api
 @ResponseBody
 @RestController
@@ -36,6 +38,7 @@ public class PrincipalController {
 	public Result getPagePrincipal(@PathVariable("page") Long page,
 	                               @PathVariable("limit") Long limit,
 	                               PrincipalQueryVo principalQueryVo) {
+		log.info("获取用户借用记录......");
 		Page<PrincipalInfo> pageParam = new Page<>(page, limit);
 		IPage<PrincipalInfo> pageModel = principalService.selectPage(pageParam, principalQueryVo);
 		return Result.ok(pageModel);
@@ -45,6 +48,7 @@ public class PrincipalController {
 	@ApiOperation("删除记录")
 	@DeleteMapping("remove/{id}")
 	public Result removeDataById(@PathVariable Long id) {
+		log.info("删除设备借用记录......");
 		boolean flag = principalService.removeById(id);
 		if(flag) {
 			return Result.ok();
