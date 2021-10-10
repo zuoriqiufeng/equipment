@@ -19,7 +19,7 @@ import java.util.Date;
 public class MyMetaObjectHandler implements MetaObjectHandler {
 	@Override
 	public void insertFill(MetaObject metaObject) {
-		log.info("start insert fill.....");
+		log.info("User start insert fill.....");
 		this.setFieldValByName("createTime", new Date(), metaObject);
 		this.setFieldValByName("updateTime", new Date(), metaObject);
 		this.setFieldValByName("authStatus", 0, metaObject);
@@ -30,7 +30,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
 	
 	@Override
 	public void updateFill(MetaObject metaObject) {
-		log.info("start update fill......");
+		log.info("User start update fill......");
 		this.setFieldValByName("updateTime", new Date(), metaObject);
 	}
 }

@@ -11,6 +11,7 @@ import com.bistu.equip.user.service.UserInfoService;
 import com.bistu.equip.vo.user.UserInfoQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ import java.util.List;
  * @Description
  * @Date 2021/7/31 - 15:12
  */
+@Slf4j
 @Api
 @ResponseBody
 @RestController
@@ -39,6 +41,7 @@ public class UserController {
 	public Result getUserPage(@PathVariable("page") Long page,
 	                           @PathVariable("limit") Long limit,
 	                           UserInfoQueryVo userInfoQueryVo) {
+		log.info("获取用户列表接口");
 		Page<UserInfo> pageParam = new Page<>(page, limit);
 		IPage<UserInfo> pageModel = userInfoService.selectPage(pageParam, userInfoQueryVo);
 		return Result.ok(pageModel);
@@ -76,6 +79,7 @@ public class UserController {
 	@GetMapping("lockUser/{id}/{status}")
 	public Result lockUser(@PathVariable Long id,
 	                       @PathVariable Integer status) {
+		log.info("修改用户状态");
 		// 先查询
 		UserInfo user = userInfoService.getById(id);
 		// 设置状态
@@ -90,6 +94,7 @@ public class UserController {
 	public Result login(
 			@RequestParam(value = "username", defaultValue = "admin") String username,
 			@RequestParam(value = "password", defaultValue = "123456") String password) {
+		log.info("用户后台登陆");
 		if("admin".equals(username) && "123456".equals(password)) {
 			String token = JwtHelper.createToken(132456L, "admin");
 			HashMap<String, String> map = new HashMap<>();
@@ -104,6 +109,7 @@ public class UserController {
 	@PostMapping("updateInfo")
 	public Result updateById(@RequestBody UserUpdateModel updateInfo) {
 		// 先对字符串进行转换
+		log.info("修改用户对应信息");
 		UserInfo userInfo = new UserInfo();
 		userInfo.setAccountType(updateInfo.getAccountType());
 		userInfo.setIdentity(updateInfo.getIdentity());

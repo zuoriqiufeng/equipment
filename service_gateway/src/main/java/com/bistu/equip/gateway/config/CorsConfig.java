@@ -3,12 +3,14 @@ package com.bistu.equip.gateway.config;
 
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.util.pattern.PathPatternParser;
+import sun.rmi.runtime.Log;
 
 
 /**
@@ -17,6 +19,7 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @Description
  * @Date 2021/5/21 - 14:46
  */
+@Slf4j
 @Configuration
 public class CorsConfig {
 	
@@ -26,6 +29,7 @@ public class CorsConfig {
 	 */
 	@Bean
 	public CorsWebFilter corsFilter() {
+		log.info("跨域请求处理.....");
 		CorsConfiguration config = new CorsConfiguration();
 		config.addAllowedMethod("*");
 		config.addAllowedOrigin("*");

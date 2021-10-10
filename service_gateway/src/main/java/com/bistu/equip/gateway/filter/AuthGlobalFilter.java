@@ -92,6 +92,7 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
      * @return
      */
     private Long getUserId(ServerHttpRequest request) {
+        log.info("验证token......");
         String token = "";
         List<String> tokenList = request.getHeaders().get("token");
         if(null  != tokenList) {

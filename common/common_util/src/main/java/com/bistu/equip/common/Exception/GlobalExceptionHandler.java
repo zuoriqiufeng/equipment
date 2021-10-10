@@ -5,6 +5,7 @@ import com.bistu.equip.common.result.Result;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * 全局异常处理部分
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @Date 2021/4/4 - 21:11
  */
 @ControllerAdvice // 全局异常处理添加注解
-//@RestControllerAdvice // 表示方法返回值用json格式输出
+@RestControllerAdvice // 表示方法返回值用json格式输出
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(Exception.class) // 表示出现那种异常执行这个方法

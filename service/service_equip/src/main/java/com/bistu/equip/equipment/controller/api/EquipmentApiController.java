@@ -7,6 +7,7 @@ import com.bistu.equip.equipment.service.EquipmentService;
 import com.bistu.equip.model.equipment.Equipment;
 import com.bistu.equip.vo.equip.EquipmentQueryVo;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description
  * @Date 2021/10/2 - 14:22
  */
+@Slf4j
 @RestController("api/equip")
 public class EquipmentApiController {
 	
@@ -29,6 +31,7 @@ public class EquipmentApiController {
 	                           @PathVariable("limit") Long limit,
 	                           EquipmentQueryVo equipmentQueryVo) {
 		// 前端只需要查询出空闲的设备即可
+		log.info("前台查询设备列表,只查询空闲设备....");
 		equipmentQueryVo.setStatus(0);
 		Page<Equipment> pageParam = new Page<>(page, limit);
 		IPage<Equipment> pageModel = equipmentService.selectPage(pageParam, equipmentQueryVo);

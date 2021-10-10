@@ -46,7 +46,7 @@ public class UserApiController {
 		String name;
 		UserInfo userInfo = userInfoService.selectWxInfoOpenId(openid);
 		HashMap<String, String> result = new HashMap();
-		if(userInfo == null) {
+		if(userInfo == null || userInfo.getAuthStatus() == 0) {
 			userInfo = new UserInfo();
 			userInfo.setOpenId(openid);
 			userInfo.setLastLoginTime(new Date());

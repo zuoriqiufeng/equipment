@@ -15,7 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sun.util.calendar.LocalGregorianCalendar;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -64,6 +68,7 @@ public class EquipmentController {
 	@ApiOperation("删除设备")
 	@DeleteMapping("{id}")
 	public Result deleteById(@PathVariable Integer id) {
+		log.info("删除设备......");
 		boolean flag = equipmentService.removeById(id);
 		if(flag) {
 			return Result.ok();
@@ -83,24 +88,33 @@ public class EquipmentController {
 	@PutMapping("modifyStatus/{id}/{status}")
 	public Result modifyStatus(@PathVariable("id") Long id,
 	                           @PathVariable("status") Integer status) {
+		log.info("修改设备状态");
 		Equipment equipment = equipmentService.getById(id);
 		equipment.setStatus(status);
 		equipmentService.updateById(equipment);
 		return null;
 	}
 	
-	@ApiOperation("获取借用详情信息")
-	@PutMapping("getBorrowDetail")
-	public Result getBorrowDetail() {
-		return null;
-	}
 	
 	
 	@ApiOperation("批量导入设备信息")
 	@PostMapping("importData")
 	public Result importEquip(MultipartFile file){
+		log.info("导入设备数据");
 		equipmentService.importEquipData(file);
 		return Result.ok();
+	}
+	
+	@ApiOperation("批量导出设备信息")
+	@GetMapping("exportData")
+	public void exportEquip(HttpServletResponse response){
+		log.info("导出设备数据......");
+		try {
+			equipmentService.exportEquipData(response);
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	@ApiOperation("更新设备信息")
@@ -118,8 +132,11 @@ public class EquipmentController {
 	 */
 	private String getDeviceId() {
 		int total = equipmentService.count();
-		int year = new Date().getYear();
-		StringBuilder id = new StringBuilder().append(year).append("011").append(total);
+		Calendar calendar = Calendar.getInstance();
+		int year = calendar.get(Calendar.YEAR);
+		// 获取当前秒
+		int second = calendar.get(Calendar.SECOND);
+		StringBuilder id = new StringBuilder().append(year).append(second).append("011").append(total);
 		return id.toString();
 	}
 }

@@ -15,6 +15,7 @@ import com.bistu.equip.vo.principal.PrincipalBorrowVo;
 import com.bistu.equip.vo.principal.PrincipalQueryVo;
 import com.bistu.equip.vo.principal.PrincipalReturnVo;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ import java.util.List;
  * @Description
  * @Date 2021/8/8 - 16:50
  */
+@Slf4j
 @Service
 public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, PrincipalInfo> implements PrincipalService {
 	
@@ -70,6 +72,7 @@ public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, Principal
 			wrapper.eq("user_name", userName);
 		}
 		// 封装信息
+		log.info("借用记录数据封装......");
 		Page<PrincipalInfo> principalInfoPage = baseMapper.selectPage(pageParam, wrapper);
 		principalInfoPage.getRecords().forEach(this::codeExchange);
 		return principalInfoPage ;
@@ -153,10 +156,13 @@ public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, Principal
 		principalInfo.setReturnTime(new Date());
 		// base64 转 byte
 		byte[] reHumanSign = baseToByte(principalReturnVo.getReHumanSign());
+		
 		principalInfo.setReHumanSign(reHumanSign);
 		UpdateWrapper<PrincipalInfo> wrapper = new UpdateWrapper<>();
+		
 		wrapper.eq("uid", principalInfo.getUid());
 		wrapper.eq("equip_id", principalInfo.getEquipId());
+		
 		equipFeignClient.modifyStatus(principalInfo.getEquipId(), 0);
 		baseMapper.update(principalInfo, wrapper);
 	}
