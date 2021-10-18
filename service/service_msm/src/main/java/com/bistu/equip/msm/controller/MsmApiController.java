@@ -2,8 +2,7 @@ package com.bistu.equip.msm.controller;
 
 import com.bistu.equip.msm.service.MsmService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Dx666
@@ -18,6 +17,15 @@ public class MsmApiController {
 	private MsmService msmService;
 	
 	
+	@PostMapping("pushMessage/")
+	public String pushMessage(@RequestParam("openid") String openid) {
+		return push (openid);
+	}
 	
+	
+	
+	public String push(String openid) {
+		return null;
+	}
 	
 }

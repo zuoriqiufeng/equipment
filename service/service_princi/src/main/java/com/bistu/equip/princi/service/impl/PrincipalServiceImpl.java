@@ -140,6 +140,8 @@ public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, Principal
 		principalInfo.setTecSign(tecSign);
 		principalInfo.setUserSign(userSign);
 		principalInfo.setLeHumanSign(leHumanSign);
+		principalInfo.setStatus(0);
+		// 修改设备状态
 		equipFeignClient.modifyStatus(principalInfo.getEquipId(), 1);
 		this.save(principalInfo);
 	}
@@ -149,22 +151,20 @@ public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, Principal
 	 * @param principalReturnVo
 	 */
 	@Override
-	public void returnEquip(PrincipalReturnVo principalReturnVo) {
-		PrincipalInfo principalInfo = new PrincipalInfo();
+	public void returnEquip(PrincipalReturnVo principalReturnVo, Long id) {
+		PrincipalInfo principalInfo = baseMapper.selectById(id);
 		BeanUtils.copyProperties(principalReturnVo,principalInfo);
-		// 设置返还时间
+		// 设置返还时间和状态
 		principalInfo.setReturnTime(new Date());
+		principalInfo.setStatus(1);
 		// base64 转 byte
 		byte[] reHumanSign = baseToByte(principalReturnVo.getReHumanSign());
-		
+		byte[] reUserSign = baseToByte(principalReturnVo.getReUserSign());
 		principalInfo.setReHumanSign(reHumanSign);
-		UpdateWrapper<PrincipalInfo> wrapper = new UpdateWrapper<>();
-		
-		wrapper.eq("uid", principalInfo.getUid());
-		wrapper.eq("equip_id", principalInfo.getEquipId());
-		
+		principalInfo.setReUserSign(reUserSign);
+		// 更新数据库信息
 		equipFeignClient.modifyStatus(principalInfo.getEquipId(), 0);
-		baseMapper.update(principalInfo, wrapper);
+		baseMapper.updateById(principalInfo);
 	}
 	
 	/**
@@ -193,16 +193,20 @@ public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, Principal
 	 */
 	private void codeExchange(PrincipalInfo principalInfo) {
 		String reHumanSignBase = null;
-		String returnStatus;
+		String reUserSignBase = null;
+		String returnStatus;  //返回状态
 		String userSignBase = byteToBase(principalInfo.getUserSign());
 		String tecSignBase = byteToBase(principalInfo.getTecSign());
 		String leHumanSignBase = byteToBase(principalInfo.getLeHumanSign());
+		
 		if(principalInfo.getStatus() == 1) {
 			reHumanSignBase = byteToBase(principalInfo.getReHumanSign());
+			reUserSignBase = byteToBase(principalInfo.getReUserSign());
 			returnStatus = "已归还";
 		} else {
 			returnStatus = "未归还";
 		}
+		principalInfo.getParam().put("reUserSignBase", reUserSignBase);
 		principalInfo.getParam().put("userSignBase", userSignBase);
 		principalInfo.getParam().put("tecSignBase", tecSignBase);
 		principalInfo.getParam().put("leHumanSignBase", leHumanSignBase);

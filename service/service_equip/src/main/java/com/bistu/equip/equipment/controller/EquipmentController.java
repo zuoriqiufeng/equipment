@@ -92,7 +92,7 @@ public class EquipmentController {
 		Equipment equipment = equipmentService.getById(id);
 		equipment.setStatus(status);
 		equipmentService.updateById(equipment);
-		return null;
+		return Result.ok();
 	}
 	
 	

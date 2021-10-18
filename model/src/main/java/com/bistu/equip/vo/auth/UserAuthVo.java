@@ -1,5 +1,6 @@
 package com.bistu.equip.vo.auth;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -25,5 +26,20 @@ public class UserAuthVo {
 	
 	@ApiModelProperty("工号/学号")
 	private String no;
+	
+	@ApiModelProperty("系部")
+	private String dept;
+	
+	@ApiModelProperty("专业")
+	private String major;
+	
+	@ApiModelProperty("年级")
+	private String grade;
+	
+	@ApiModelProperty("班级")
+	private String schoolClass;
+	
+	@ApiModelProperty("身份（0：学生 1：教职人员）")
+	private Integer identity;
 	
 }

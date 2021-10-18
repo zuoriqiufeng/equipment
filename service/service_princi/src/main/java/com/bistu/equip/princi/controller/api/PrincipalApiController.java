@@ -1,15 +1,18 @@
 package com.bistu.equip.princi.controller.api;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bistu.equip.common.result.Result;
 import com.bistu.equip.common.utils.AuthContextHolder;
+import com.bistu.equip.equipment.client.EquipFeignClient;
 import com.bistu.equip.model.principal.PrincipalInfo;
 import com.bistu.equip.princi.service.PrincipalService;
 import com.bistu.equip.vo.principal.PrincipalBorrowVo;
 import com.bistu.equip.vo.principal.PrincipalQueryVo;
 import com.bistu.equip.vo.principal.PrincipalReturnVo;
+import com.sun.org.apache.bcel.internal.generic.DDIV;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +37,8 @@ import java.io.IOException;
 public class PrincipalApiController {
 	@Autowired
 	private PrincipalService principalService;
-	
+	@Autowired
+	private EquipFeignClient equipFeignClient;
 	
 	/**
 	 * 用户端查看历史记录
@@ -42,33 +46,35 @@ public class PrincipalApiController {
 	 *
 	 */
 	@ApiOperation("用户查看历史记录")
-	@GetMapping("auth/records/{id}")
-	public Result getRecords(@PathVariable Long id) {
-		log.info("用户历史记录查询");
-		Page<PrincipalInfo> page = new Page<>(0, 30);
+	@GetMapping("auth/records/{page}/{limit}")
+	public Result getRecords(@PathVariable Long page, @PathVariable Long limit, HttpServletRequest request) {
+		log.info("用户历史记录查询......");
+		Long id = AuthContextHolder.getUserId(request);
+		Page<PrincipalInfo> pageInfo = new Page<>(page, limit);
 		// 调用方法查询
 		PrincipalQueryVo principalQueryVo = new PrincipalQueryVo();
 		principalQueryVo.setUid(id);
-		IPage<PrincipalInfo> resultPage = principalService.selectPage(page, principalQueryVo);
+		IPage<PrincipalInfo> resultPage = principalService.selectPage(pageInfo, principalQueryVo);
 		return Result.ok(resultPage);
 	}
 	
 	@ApiOperation("设备借出接口")
 	@PostMapping("auth/borrow")
-	public Result borrow(@RequestBody PrincipalBorrowVo principalBorrowVo, HttpServletRequest request) {
-		log.info("设备借出");
+	public Result borrow(@RequestBody() PrincipalBorrowVo principalBorrowVo, HttpServletRequest request) {
+		log.info("设备借出......");
 		Long userId = AuthContextHolder.getUserId(request);
+		
 		principalBorrowVo.setUid(userId);
 		principalService.borrow(principalBorrowVo);
-		
 		return Result.ok();
 	}
 	
 	@ApiOperation("设备归还接口")
-	@PostMapping("auth/return")
-	public Result returnEquip(@RequestBody PrincipalReturnVo principalReturnVo) {
+	@PostMapping("auth/return/{id}")
+	public Result returnEquip(@PathVariable Long id,
+	                          @RequestBody PrincipalReturnVo principalReturnVo) {
 		log.info("设备归还");
-		principalService.returnEquip(principalReturnVo);
+		principalService.returnEquip(principalReturnVo, id);
 		return Result.ok();
 	}
 	
@@ -84,6 +90,13 @@ public class PrincipalApiController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return Result.ok();
+	}
+	
+	// 测试接口
+	@PostMapping("test")
+	public Result test() {
+		equipFeignClient.modifyStatus(2L, 1);
 		return Result.ok();
 	}
 }

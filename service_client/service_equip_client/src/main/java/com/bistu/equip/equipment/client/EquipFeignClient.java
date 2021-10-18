@@ -3,6 +3,7 @@ package com.bistu.equip.equipment.client;
 import com.bistu.equip.common.result.Result;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
  * @Description
  * @Date 2021/9/21 - 13:30
  */
-@Repository
+@Component
 @FeignClient("service-equip")
 public interface EquipFeignClient {
 	
@@ -24,8 +25,7 @@ public interface EquipFeignClient {
 	 * @param status
 	 * @return
 	 */
-	@ApiOperation("修改设备状态")
-	@PutMapping("modifyStatus/{id}/{status}")
+	@PutMapping("admin/equip/modifyStatus/{id}/{status}")
 	Result modifyStatus(@PathVariable("id") Long id,
 	                           @PathVariable("status") Integer status);
 }

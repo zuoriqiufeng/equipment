@@ -15,16 +15,16 @@ import java.util.Date;
 @Data
 public class PrincipalReturnVo {
 	
-	@ApiModelProperty("用户id")
-	private Long uid;
-	
-	@ApiModelProperty("设备id")
-	private Long equipId;
-	
 	@ApiModelProperty("返还经办人")
 	private String reHuman;
 	@ApiModelProperty("返还经办人签字")
 	private String reHumanSign;
+	
+	@ApiModelProperty("返还人")
+	private String reUsername;
+	
+	@ApiModelProperty("返还人签字")
+	private String reUserSign;
 	
 	@ApiModelProperty("返还时间")
 	private Date returnTime;

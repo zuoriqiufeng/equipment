@@ -32,7 +32,8 @@ public class UserApiController {
 	
 	@ApiOperation("用户认证接口")
 	@PostMapping("auth/userAuth")
-	public Result userAuth(@RequestBody UserAuthVo userAuthVo, HttpServletRequest request) {
+	public Result userAuth(@RequestBody UserAuthVo userAuthVo,HttpServletRequest request) {
+		System.out.println(userAuthVo);
 		Long userId = AuthContextHolder.getUserId(request);
 		userInfoService.userAuth(userId, userAuthVo);
 		return Result.ok();
@@ -46,7 +47,7 @@ public class UserApiController {
 		String name;
 		UserInfo userInfo = userInfoService.selectWxInfoOpenId(openid);
 		HashMap<String, String> result = new HashMap();
-		if(userInfo == null || userInfo.getAuthStatus() == 0) {
+		if(userInfo == null) {
 			userInfo = new UserInfo();
 			userInfo.setOpenId(openid);
 			userInfo.setLastLoginTime(new Date());

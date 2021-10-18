@@ -72,6 +72,15 @@ public class PrincipalInfo extends BaseEntity {
 	@TableField("re_human_sign")
 	private byte[] reHumanSign;
 	
+	
+	@ApiModelProperty("返还人")
+	@TableField("re_user")
+	private String reUsername;
+	
+	@ApiModelProperty("返还人签字")
+	@TableField("re_user_sign")
+	private byte[] reUserSign;
+	
 	@ApiModelProperty("借出时间")
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	@TableField(value = "lend_time", fill = FieldFill.INSERT)

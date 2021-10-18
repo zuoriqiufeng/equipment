@@ -28,6 +28,10 @@ public class UserInfo extends BaseEntity {
 	@TableField("open_id")
 	private String openId;
 
+	@ApiModelProperty("微信开放平台UnionID")
+	@TableField("union_id")
+	private String unionId;
+	
 	@ApiModelProperty("认证状态（0：未认证 1：已认证）")
 	@TableField(value = "auth_status", fill = FieldFill.INSERT)
 	private Integer authStatus;

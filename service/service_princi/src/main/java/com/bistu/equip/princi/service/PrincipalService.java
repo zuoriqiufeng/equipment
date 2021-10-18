@@ -56,5 +56,5 @@ public interface PrincipalService extends IService<PrincipalInfo> {
 	 * 归还设备方法
 	 * @param principalReturnVo
 	 */
-	void returnEquip(PrincipalReturnVo principalReturnVo);
+	void returnEquip(PrincipalReturnVo principalReturnVo, Long id);
 }

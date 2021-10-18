@@ -3,6 +3,7 @@ package com.bistu.equip.equipment;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -15,7 +16,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @ComponentScan("com.bistu.equip")
 @SpringBootApplication
-@EnableSwagger2
+
 //@CrossOrigin // 允许跨域访问
 @EnableDiscoveryClient // 注册nacos服务
 public class ServiceEquipApplication {

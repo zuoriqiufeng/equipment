@@ -20,7 +20,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 //@CrossOrigin // 设置跨域访问
 @EnableDiscoveryClient // 注册nacos服务
-@EnableFeignClients("com.bistu")
+@EnableFeignClients("com.bistu.equip")
 public class ServicePrincipalApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ServicePrincipalApplication.class, args);

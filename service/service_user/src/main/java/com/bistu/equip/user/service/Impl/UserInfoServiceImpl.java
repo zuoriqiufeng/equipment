@@ -13,6 +13,7 @@ import com.bistu.equip.user.service.UserInfoService;
 import com.bistu.equip.vo.auth.UserAuthVo;
 import com.bistu.equip.vo.user.UserInfoQueryVo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -102,10 +103,18 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 		UserInfo userInfo = baseMapper.selectById(userId);
 		// 用户认证状态
 		userInfo.setAuthStatus(1);
-		userInfo.setCollege(userAuthVo.getCollege());
-		userInfo.setNo(userAuthVo.getNo());
-		userInfo.setPhone(userAuthVo.getPhone());
-		userInfo.setSex(userAuthVo.getSex());
+//		userInfo.setCollege(userAuthVo.getCollege());
+//		userInfo.setNo(userAuthVo.getNo());
+//		userInfo.setPhone(userAuthVo.getPhone());
+//		userInfo.setSex(userAuthVo.getSex());
+//		userInfo.setName(userAuthVo.getName());
+//		userInfo.setIdentity(userAuthVo.getIdentity());
+//		userInfo.setSchoolClass(userAuthVo.getSchoolClass());
+//		userInfo.setGrade(userAuthVo.getGrade());
+//		userInfo.setMajor(userAuthVo.getMajor());
+//		userInfo.setDept(userAuthVo.getDept());
+		BeanUtils.copyProperties(userAuthVo, userInfo);
+		System.out.println(userInfo);
 		baseMapper.updateById(userInfo);
 	}
 	
