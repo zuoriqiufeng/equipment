@@ -17,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 /**
@@ -118,6 +119,15 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 		baseMapper.updateById(userInfo);
 	}
 	
+	/**
+	 * 批量导出用户信息
+	 * @param response
+	 */
+	@Override
+	public void exportUserData(HttpServletResponse response) {
+	
+	}
+	
 	
 	/**
 	 * 处理一下用户信息
@@ -127,12 +137,13 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 	private void packageUserInfo(UserInfo userInfo) {
 		log.info("在查询时,包装用户信息.....");
 		// 处理用户状态编码
-		String authStatus = "";
+		String authStatus;
 		String sexString = "";
 		if(userInfo.getAuthStatus() == 0) {
 			authStatus =  "未认证";
 		} else {
 			sexString = userInfo.getSex() == 0 ? "女" : "男";
+			authStatus =  "已认证";
 		}
 		String accountType = userInfo.getAccountType() == 0 ? "普通用户" : "管理员";
 		String identityString = userInfo.getIdentity() == 0 ? "学生" : "教职人员";

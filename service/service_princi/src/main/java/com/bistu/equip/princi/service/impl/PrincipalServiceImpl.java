@@ -49,6 +49,9 @@ public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, Principal
 	@Override
 	public IPage<PrincipalInfo> selectPage(Page<PrincipalInfo> pageParam, PrincipalQueryVo principalQueryVo) {
 		// 获取查询参数
+		String equipName = principalQueryVo.getEquipName();
+		Integer borrowTime = principalQueryVo.getBorrowTime();
+		Integer status = principalQueryVo.getStatus();
 		String lendHuman = principalQueryVo.getLendHuman();
 		String reHuman = principalQueryVo.getReHuman();
 		Long uid = principalQueryVo.getUid();
@@ -56,21 +59,32 @@ public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, Principal
 		QueryWrapper<PrincipalInfo> wrapper = new QueryWrapper<>();
 		// 设置查询条件
 		if(!StringUtils.isEmpty(lendHuman)) {
-			wrapper.eq("lend_human", lendHuman);
+			wrapper.like("lend_human", lendHuman);
 		}
 		if(!StringUtils.isEmpty(reHuman)) {
-			wrapper.eq("re_human", reHuman);
+			wrapper.like("re_human", reHuman);
 		}
-		if(!StringUtils.isEmpty(lendHuman)) {
-			wrapper.eq("lend_human", lendHuman);
-		}
+		
 		if(!StringUtils.isEmpty(uid)) {
 			wrapper.eq("uid", uid);
 		}
 		
 		if(!StringUtils.isEmpty(userName)) {
-			wrapper.eq("user_name", userName);
+			wrapper.like("user_name", userName);
 		}
+		
+		if(!StringUtils.isEmpty(status)) {
+			wrapper.eq("status", status);
+		}
+		
+		if(!StringUtils.isEmpty(borrowTime)) {
+			wrapper.eq("borrow_time", borrowTime);
+		}
+		
+		if(!StringUtils.isEmpty(equipName)) {
+			wrapper.like("equip_name", equipName);
+		}
+		
 		// 封装信息
 		log.info("借用记录数据封装......");
 		Page<PrincipalInfo> principalInfoPage = baseMapper.selectPage(pageParam, wrapper);
@@ -206,6 +220,13 @@ public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, Principal
 		} else {
 			returnStatus = "未归还";
 		}
+		// 将byte数据清空
+		principalInfo.setUserSign(null);
+		principalInfo.setTecSign(null);
+		principalInfo.setLeHumanSign(null);
+		principalInfo.setReHumanSign(null);
+		principalInfo.setReUserSign(null);
+		// 将base64编码放入到数据种
 		principalInfo.getParam().put("reUserSignBase", reUserSignBase);
 		principalInfo.getParam().put("userSignBase", userSignBase);
 		principalInfo.getParam().put("tecSignBase", tecSignBase);

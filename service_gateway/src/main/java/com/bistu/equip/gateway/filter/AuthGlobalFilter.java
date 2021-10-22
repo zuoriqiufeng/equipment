@@ -34,6 +34,8 @@ import java.util.List;
 public class AuthGlobalFilter implements GlobalFilter, Ordered {
     
     private AntPathMatcher antPathMatcher = new AntPathMatcher();
+    
+    private static final int AUTH_GLOBAL_FILTER = 10099;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -70,7 +72,7 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return 0;
+        return AUTH_GLOBAL_FILTER;
     }
 
     /**

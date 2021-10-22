@@ -22,4 +22,13 @@ public class PrincipalQueryVo {
 	
 	@ApiModelProperty("返还经办人")
 	private String reHuman;
+	
+	@ApiModelProperty("设备名")
+	private String equipName;
+	
+	@ApiModelProperty("借用时长")
+	private Integer borrowTime;
+	
+	@ApiModelProperty("是否归还（0：未归还，1：已归还）")
+	private Integer status;
 }

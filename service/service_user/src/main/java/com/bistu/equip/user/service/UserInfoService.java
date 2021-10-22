@@ -9,6 +9,8 @@ import com.bistu.equip.model.user.UserInfo;
 import com.bistu.equip.vo.auth.UserAuthVo;
 import com.bistu.equip.vo.user.UserInfoQueryVo;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @author Dx666
  * @Description
@@ -25,4 +27,7 @@ public interface UserInfoService  extends IService<UserInfo> {
 	
 	// 用户认证接口
 	void userAuth(Long userId, UserAuthVo userAuthVo);
+	
+	// 批量导出用户信息
+	void exportUserData(HttpServletResponse response);
 }

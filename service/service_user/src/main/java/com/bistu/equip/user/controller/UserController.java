@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -116,6 +118,14 @@ public class UserController {
 		userInfo.setId(updateInfo.getId());
 		userInfoService.updateById(userInfo);
 		return Result.ok();
+	}
+	
+	@ApiOperation("导出用户信息")
+	@GetMapping("exportData")
+	public void exportEquip(HttpServletResponse response){
+		log.info("导出设备数据......");
+		userInfoService.exportUserData(response);
+		
 	}
 	
 }
