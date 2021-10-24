@@ -6,9 +6,10 @@
     <!-- scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true -->
     <!-- scanPeriod:设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。 -->
     <!-- debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。 -->
-    <contextName>logbackEquipment</contextName>
+    <contextName>logbackGateway</contextName>
 
-    <property name="log.path" value="/equipment/log/gateway"/>
+    <property name="log.path" value="/equipment/log/gateway" />
+    <!-- 彩色日志 -->
     <!-- 配置格式变量：CONSOLE_LOG_PATTERN 彩色日志格式 -->
     <!-- magenta:洋红 -->
     <!-- boldMagenta:粗红-->
@@ -131,7 +132,7 @@
     <!--开发环境:打印控制台-->
     <springProfile name="dev">
         <!--可以输出项目中的debug日志，包括mybatis的sql日志-->
-        <logger name="com.bistu.equip.equipment.mapper.EquipmentMapper" level="INFO" />
+        <logger name="com.bistu.equip.user.mapper.UserInfoMapper" level="INFO" />
 
         <!--
             root节点是必选节点，用来指定最基础的日志输出级别，只有一个level属性
