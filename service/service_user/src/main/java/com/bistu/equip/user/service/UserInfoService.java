@@ -23,7 +23,7 @@ public interface UserInfoService  extends IService<UserInfo> {
 	IPage<UserInfo> selectPage(Page<UserInfo> pageParam, UserInfoQueryVo userInfoQueryVo);
 	
 	// 通过openid查询用户信息
-	UserInfo selectWxInfoOpenId(String openid);
+	UserInfo selectWxInfoOpenIdApplet(String openIdApplet);
 	
 	// 用户认证接口
 	void userAuth(Long userId, UserAuthVo userAuthVo);

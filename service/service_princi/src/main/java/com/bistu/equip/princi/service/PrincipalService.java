@@ -26,25 +26,12 @@ public interface PrincipalService extends IService<PrincipalInfo> {
 	 */
 	IPage<PrincipalInfo> selectPage(Page<PrincipalInfo> pageParam, PrincipalQueryVo principalQueryVo);
 	
-	/**
-	 * 上传教师签名接口
-	 * @param uid
-	 * @param equipId
-	 * @param bytes
-	 */
-	void uploadImgTeacher(Long uid, Long equipId, byte[] bytes);
 	
 	/**
 	 * 获取全部数据
 	 * @return
 	 */
 	List<PrincipalInfo>getAllInfo();
-	
-	/**
-	 * 归还设备接口
-	 * @param principalInfo
-	 */
-	void updatePrincipal(PrincipalInfo principalInfo);
 	
 	/**
 	 * 借用设备方法
@@ -57,4 +44,10 @@ public interface PrincipalService extends IService<PrincipalInfo> {
 	 * @param principalReturnVo
 	 */
 	void returnEquip(PrincipalReturnVo principalReturnVo, Long id);
+	
+	/**
+	 * 获取带归还的设备订单
+	 * @return
+	 */
+	List<PrincipalInfo>getReturnedData();
 }

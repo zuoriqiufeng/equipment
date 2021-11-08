@@ -49,7 +49,7 @@ public class UserApiController {
 		HashMap<String, String> result = new HashMap();
 		if(userInfo == null) {
 			userInfo = new UserInfo();
-			userInfo.setOpenId(openid);
+			userInfo.setOpenIdApplet(openid);
 			userInfo.setLastLoginTime(new Date());
 			userInfoService.save(userInfo);
 			result.put("authStatus", "0");

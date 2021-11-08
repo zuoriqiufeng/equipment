@@ -86,16 +86,16 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 		return userInfoPage;
 	}
 	
+
 	/**
-	 * 通过openid查询用户信息
-	 * @param openid
+	 * 通过小程序openid查询用户信息
+	 * @param openidApplet
 	 * @return
 	 */
 	@Override
-	public UserInfo selectWxInfoOpenId(String openid) {
-		
+	public UserInfo selectWxInfoOpenIdApplet(String openidApplet) {
 		QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
-		wrapper.eq("open_id", openid);
+		wrapper.eq("open_id_applet", openidApplet);
 		return baseMapper.selectOne(wrapper);
 	}
 	

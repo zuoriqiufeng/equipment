@@ -5,23 +5,23 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.bistu.equip.model.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Dx666
  * @Description
- * @Date 2021/7/30 - 21:23
+ * @Date 2021/11/5 - 22:14
  */
 @Data
-@ApiModel(description = "equip_principal")
-@TableName("equip_principal")
-public class PrincipalInfo extends BaseEntity {
+@TableName("front_principal")
+public class PrincipalInfoFront extends BaseEntity {
+	
+	@ApiModelProperty("后台记录编号")
+	@TableField("pri_id")
+	private Long principalId;
 	
 	@ApiModelProperty("用户编号")
 	@TableField("uid")
@@ -36,52 +36,32 @@ public class PrincipalInfo extends BaseEntity {
 	private Integer status;
 	
 	@ApiModelProperty("用户名")
-	@TableField("user_name")
+	@TableField("username")
 	private String username;
 	
 	@ApiModelProperty("设备名")
 	@TableField("equip_name")
 	private String equipName;
 	
-	
-	@ApiModelProperty("借出经办人")
-	@TableField("lend_human")
-	private String lendHuman;
-	
-	@ApiModelProperty("老师姓名")
-	@TableField("teacher_name")
-	private String tecName;
-	
-	
-	@ApiModelProperty("返还经办人")
-	@TableField("re_human")
-	private String reHuman;
-	
-	@ApiModelProperty("返还人")
-	@TableField("re_user")
-	private String reUsername;
-	
 	@ApiModelProperty("借出时间")
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	@TableField(value = "lend_time", fill = FieldFill.INSERT)
 	private Date lendTime;
 	
-	@ApiModelProperty("预计返还时间")
+	@ApiModelProperty("返还时间")
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	@TableField("estimate_return_time")
+	@TableField(value = "estimate_return_time", fill = FieldFill.INSERT)
 	private Date estimateReturnTime;
 	
-	@ApiModelProperty("实际返还时间")
+	@ApiModelProperty("预计返还时间")
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	@TableField("actual_return_time")
+	@TableField(value = "actual_return_time")
 	private Date actualReturnTime;
 	
-	
 	@ApiModelProperty("借用时长")
-	@TableField(value = "borrow_time")
 	private Integer borrowTime;
 	
+	@ApiModelProperty("归还倒计时")
+	private Integer returnCount;
 	
-	
-
 }

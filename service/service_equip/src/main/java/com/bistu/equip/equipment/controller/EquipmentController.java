@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sun.util.calendar.LocalGregorianCalendar;
@@ -90,6 +91,10 @@ public class EquipmentController {
 	                           @PathVariable("status") Integer status) {
 		log.info("修改设备状态");
 		Equipment equipment = equipmentService.getById(id);
+		// 如果相等标识设备已被借出
+		if(status.equals(equipment.getStatus())) {
+			return Result.fail(ResultCodeEnum.EQUIP_NOT_EXIST);
+		}
 		equipment.setStatus(status);
 		equipmentService.updateById(equipment);
 		return Result.ok();

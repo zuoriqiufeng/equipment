@@ -9,6 +9,8 @@ import com.bistu.equip.common.result.ResultCodeEnum;
 import com.bistu.equip.common.utils.AuthContextHolder;
 import com.bistu.equip.equipment.client.EquipFeignClient;
 import com.bistu.equip.model.principal.PrincipalInfo;
+import com.bistu.equip.model.principal.PrincipalInfoFront;
+import com.bistu.equip.princi.service.PrincipalFrontService;
 import com.bistu.equip.princi.service.PrincipalService;
 import com.bistu.equip.vo.principal.PrincipalBorrowVo;
 import com.bistu.equip.vo.principal.PrincipalQueryVo;
@@ -40,6 +42,9 @@ public class PrincipalApiController {
 	@Autowired
 	private EquipFeignClient equipFeignClient;
 	
+	@Autowired
+	private PrincipalFrontService principalFrontService;
+	
 	/**
 	 * 用户端查看历史记录
 	 * @return
@@ -53,10 +58,10 @@ public class PrincipalApiController {
 	                         HttpServletRequest request) {
 		log.info("用户历史记录查询......");
 		Long id = AuthContextHolder.getUserId(request);
-		Page<PrincipalInfo> pageInfo = new Page<>(page, limit);
+		Page<PrincipalInfoFront> pageInfo = new Page<>(page, limit);
 		// 调用方法查询
 		principalQueryVo.setUid(id);
-		IPage<PrincipalInfo> resultPage = principalService.selectPage(pageInfo, principalQueryVo);
+		IPage<PrincipalInfoFront> resultPage = principalFrontService.selectPage(pageInfo, principalQueryVo);
 		return Result.ok(resultPage);
 	}
 	
@@ -74,9 +79,8 @@ public class PrincipalApiController {
 		if(result != null) {
 			return Result.fail(ResultCodeEnum.FORM_REPEAT_SUBMIT);
 		}
-		
 		principalBorrowVo.setUid(userId);
-		principalService.borrow(principalBorrowVo);
+		principalService.borrow(principalBorrowVo) ;
 		return Result.ok();
 	}
 	
@@ -88,21 +92,7 @@ public class PrincipalApiController {
 		principalService.returnEquip(principalReturnVo, id);
 		return Result.ok();
 	}
-	
-	@ApiOperation("上传教师签名接口")
-	@PostMapping("auth/imgUpload/teacher/{equipId}")
-	public Result uploadImg(HttpServletRequest request,
-	                        @PathVariable Long equipId,
-	                        MultipartFile file) {
-		Long uid = AuthContextHolder.getUserId(request);
-		try {
-			byte[] bytes = file.getBytes();
-			principalService.uploadImgTeacher(uid, equipId, bytes);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return Result.ok();
-	}
+
 	
 	/**
 	 * 测试接口

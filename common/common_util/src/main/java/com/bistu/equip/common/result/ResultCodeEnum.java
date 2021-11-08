@@ -31,7 +31,8 @@ public enum ResultCodeEnum {
 	ILLEGAL_CALLBACK_REQUEST_ERROR(217, "非法回调请求"),
 	FETCH_ACCESSTOKEN_FAILD(218, "获取accessToken失败"),
 	FETCH_USERINFO_ERROR(219, "获取用户失败"),
-	FORM_REPEAT_SUBMIT(220, "表单重复提交");
+	FORM_REPEAT_SUBMIT(220, "表单重复提交"),
+	EQUIP_NOT_EXIST(221, "设备已被使用");
 	
 //	PAY_RUN(220, "支付中"),
 //	CANCEL_ORDER_FAIL(225, "取消订单失败"),

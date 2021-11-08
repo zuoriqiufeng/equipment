@@ -24,9 +24,13 @@ import java.util.Date;
 @ApiModel(description = "用户表")
 public class UserInfo extends BaseEntity {
 	
-	@ApiModelProperty("微信编号")
-	@TableField("open_id")
-	private String openId;
+	@ApiModelProperty("微信小程序编号")
+	@TableField("open_id_applet")
+	private String openIdApplet;
+	
+	@ApiModelProperty("微信扫码编号")
+	@TableField("open_id_app")
+	private String openIdIdApp;
 
 	@ApiModelProperty("微信开放平台UnionID")
 	@TableField("union_id")

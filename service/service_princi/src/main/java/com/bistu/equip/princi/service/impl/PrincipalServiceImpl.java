@@ -9,8 +9,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bistu.equip.equipment.client.EquipFeignClient;
 import com.bistu.equip.model.principal.PrincipalInfo;
+import com.bistu.equip.model.principal.PrincipalInfoFront;
+import com.bistu.equip.model.principal.ReturnRecord;
+import com.bistu.equip.model.principal.Sign;
 import com.bistu.equip.princi.mapper.PrincipalMapper;
+import com.bistu.equip.princi.service.PrincipalFrontService;
 import com.bistu.equip.princi.service.PrincipalService;
+import com.bistu.equip.princi.service.ReturnRecordService;
+import com.bistu.equip.princi.service.SignService;
 import com.bistu.equip.vo.principal.PrincipalBorrowVo;
 import com.bistu.equip.vo.principal.PrincipalQueryVo;
 import com.bistu.equip.vo.principal.PrincipalReturnVo;
@@ -19,10 +25,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.bind.DatatypeConverter;
 import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -35,11 +45,20 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@Transactional // 事务注解
 public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, PrincipalInfo> implements PrincipalService {
 	
 	@Autowired
 	private EquipFeignClient equipFeignClient;
 	
+	@Autowired
+	private SignService signService;
+	
+	@Autowired
+	private ReturnRecordService returnRecordService;
+	
+	@Autowired
+	private PrincipalFrontService principalFrontService;
 	/**
 	 * 分页查询记录
 	 * @param pageParam
@@ -58,6 +77,7 @@ public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, Principal
 		String userName = principalQueryVo.getUserName();
 		QueryWrapper<PrincipalInfo> wrapper = new QueryWrapper<>();
 		// 设置查询条件
+		
 		if(!StringUtils.isEmpty(lendHuman)) {
 			wrapper.like("lend_human", lendHuman);
 		}
@@ -88,32 +108,23 @@ public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, Principal
 		// 封装信息
 		log.info("借用记录数据封装......");
 		Page<PrincipalInfo> principalInfoPage = baseMapper.selectPage(pageParam, wrapper);
-		principalInfoPage.getRecords().forEach(this::codeExchange);
+		principalInfoPage.getRecords().forEach(this::packageInfo);
+		
 		return principalInfoPage ;
-
 	}
 	
+	
 	/**
-	 * 上传教师签名接口
-	 * @param uid
-	 * @param equipId
-	 * @param bytes
+	 * 获取待归还的设备订单
+	 * @return
 	 */
 	@Override
-	public void uploadImgTeacher(Long uid, Long equipId, byte[] bytes) {
+	public List<PrincipalInfo> getReturnedData(){
 		QueryWrapper<PrincipalInfo> wrapper = new QueryWrapper<>();
-		wrapper.eq("uid", uid);
-		wrapper.eq("equip_id", equipId);
-		PrincipalInfo result = baseMapper.selectOne(wrapper);
-		// 判断数据库中是否有这条记录
-		if(result == null) {
-			result = new PrincipalInfo();
-		}
-		if(result.getLendTime() == null) {
-			result.setLendTime(new Date());
-		}
-		result.setTecSign(bytes);
-
+		wrapper.le("return_count", 3);
+		wrapper.eq("status", 1);
+		List<PrincipalInfo> principalInfos = baseMapper.selectList(wrapper);
+		return null;
 	}
 	
 	/**
@@ -126,17 +137,6 @@ public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, Principal
 		return principalInfos;
 	}
 	
-	/**
-	 * 归还设备，补充数据库信息
-	 * @param principalInfo
-	 */
-	@Override
-	public void updatePrincipal(PrincipalInfo principalInfo) {
-		UpdateWrapper<PrincipalInfo> updateWrapper = new UpdateWrapper<>();
-		updateWrapper.eq("uid", principalInfo.getUid());
-		updateWrapper.eq("equip_id", principalInfo.getEquipId());
-		baseMapper.update(principalInfo, updateWrapper);
-	}
 	
 	/**
 	 * 借用设备方法
@@ -144,20 +144,48 @@ public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, Principal
 	 */
 	@Override
 	public void borrow(PrincipalBorrowVo principalBorrowVo) {
+		// 后台数据信息
 		PrincipalInfo principalInfo = new PrincipalInfo();
+		// 前台数据信息
+		PrincipalInfoFront principalInfoFront = new PrincipalInfoFront();
 		BeanUtils.copyProperties(principalBorrowVo, principalInfo);
+		// 存储基本信息
+		principalInfo.setStatus(0);
+		principalInfo.setEstimateReturnTime(this.getReturnTime(new Date(), principalInfo.getBorrowTime()));
+		
+		// 将后台信息复制到前台
+		BeanUtils.copyProperties(principalInfo, principalInfoFront);
+		baseMapper.insert(principalInfo);
+		// 获取到插入之后的id
+		
+		Long id = principalInfo.getId();
+		// 归还记录类，记录归还时间
+		ReturnRecord returnRecord = new ReturnRecord();
+		// 签名类，存储签名
+		Sign sign = new Sign();
+		
+		// 设置对应的记录
+		sign.setPrincipalId(id);
+		returnRecord.setPrincipalId(id);
+		principalInfoFront.setPrincipalId(id);
+		
 		// 将base64图片转化成byte数组
 		byte[] userSign = baseToByte(principalBorrowVo.getUserSign());
 		byte[] leHumanSign = baseToByte(principalBorrowVo.getLeHumanSign());
 		byte[] tecSign = baseToByte(principalBorrowVo.getTecSign());
 		// 数据存储
-		principalInfo.setTecSign(tecSign);
-		principalInfo.setUserSign(userSign);
-		principalInfo.setLeHumanSign(leHumanSign);
-		principalInfo.setStatus(0);
+		sign.setLeHumanSign(leHumanSign);
+		sign.setUserSign(userSign);
+		sign.setTecSign(tecSign);
+		returnRecord.setReturnCount(principalInfo.getBorrowTime());
+		returnRecord.setStatus(0);
+		principalInfoFront.setReturnCount(principalInfo.getBorrowTime());
 		// 修改设备状态
 		equipFeignClient.modifyStatus(principalInfo.getEquipId(), 1);
-		this.save(principalInfo);
+		// 插入数据
+		signService.save(sign);
+		returnRecordService.save(returnRecord);
+		principalFrontService.save(principalInfoFront);
 	}
 	
 	/**
@@ -167,18 +195,29 @@ public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, Principal
 	@Override
 	public void returnEquip(PrincipalReturnVo principalReturnVo, Long id) {
 		PrincipalInfo principalInfo = baseMapper.selectById(id);
+		PrincipalInfoFront principalInfoFront = principalFrontService.getByPrincipalId(id);
+		Sign sign = signService.getByPrincipalId(id);
+		ReturnRecord returnRecord = returnRecordService.getByPrincipalId(id);
 		BeanUtils.copyProperties(principalReturnVo,principalInfo);
+		
 		// 设置返还时间和状态
-		principalInfo.setReturnTime(new Date());
+		principalInfo.setActualReturnTime(new Date());
 		principalInfo.setStatus(1);
+		returnRecord.setStatus(1);
+		principalInfoFront.setStatus(1);
 		// base64 转 byte
 		byte[] reHumanSign = baseToByte(principalReturnVo.getReHumanSign());
 		byte[] reUserSign = baseToByte(principalReturnVo.getReUserSign());
-		principalInfo.setReHumanSign(reHumanSign);
-		principalInfo.setReUserSign(reUserSign);
+		sign.setReHumanSign(reHumanSign);
+		sign.setReUserSign(reUserSign);
+		
 		// 更新数据库信息
 		equipFeignClient.modifyStatus(principalInfo.getEquipId(), 0);
+		
 		baseMapper.updateById(principalInfo);
+		signService.updateById(sign);
+		returnRecordService.updateById(returnRecord);
+		principalFrontService.updateById(principalInfoFront);
 	}
 	
 	/**
@@ -202,37 +241,55 @@ public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, Principal
 	
 	
 	/**
-	 * 将数据库中的byte转换成Base64
+	 * 封装数据信息
+	 * 并将数据库中的byte转换成Base64
 	 * @param principalInfo
 	 */
-	private void codeExchange(PrincipalInfo principalInfo) {
+	private void packageInfo(PrincipalInfo principalInfo) {
+		// 获取id,获取签名信息
+		Long id = principalInfo.getId();
+		Sign sign = signService.getByPrincipalId(id);
+		ReturnRecord returnRecord = returnRecordService.getByPrincipalId(id);
+		Integer status = principalInfo.getStatus();
+		
 		String reHumanSignBase = null;
 		String reUserSignBase = null;
+		String userSignBase = byteToBase(sign.getUserSign());
+		String tecSignBase = byteToBase(sign.getTecSign());
+		String leHumanSignBase = byteToBase(sign.getLeHumanSign());
 		String returnStatus;  //返回状态
-		String userSignBase = byteToBase(principalInfo.getUserSign());
-		String tecSignBase = byteToBase(principalInfo.getTecSign());
-		String leHumanSignBase = byteToBase(principalInfo.getLeHumanSign());
-		
-		if(principalInfo.getStatus() == 1) {
-			reHumanSignBase = byteToBase(principalInfo.getReHumanSign());
-			reUserSignBase = byteToBase(principalInfo.getReUserSign());
+		if(status == 1) {
+			reHumanSignBase = byteToBase(sign.getReHumanSign());
+			reUserSignBase = byteToBase(sign.getReUserSign());
 			returnStatus = "已归还";
 		} else {
 			returnStatus = "未归还";
 		}
-		// 将byte数据清空
-		principalInfo.setUserSign(null);
-		principalInfo.setTecSign(null);
-		principalInfo.setLeHumanSign(null);
-		principalInfo.setReHumanSign(null);
-		principalInfo.setReUserSign(null);
-		// 将base64编码放入到数据种
+		principalInfo.getParam().put("returnStatus", returnStatus);
+		
+		// 将base64编码放入到数据中
 		principalInfo.getParam().put("reUserSignBase", reUserSignBase);
 		principalInfo.getParam().put("userSignBase", userSignBase);
 		principalInfo.getParam().put("tecSignBase", tecSignBase);
 		principalInfo.getParam().put("leHumanSignBase", leHumanSignBase);
 		principalInfo.getParam().put("reHumanSignBase", reHumanSignBase);
-		principalInfo.getParam().put("returnStatus", returnStatus);
+		principalInfo.getParam().put("returnCount", returnRecord.getReturnCount());
+	}
+	
+	
+ 
+	/**
+	 * 计算归还日期
+	 * @param now
+	 * @param borrowTime
+	 * @return
+	 */
+	private  Date getReturnTime(Date now, Integer borrowTime) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(now);
+		calendar.add(Calendar.DAY_OF_YEAR, borrowTime);
+		Date returnTime = calendar.getTime();
+		return returnTime;
 	}
 	
 }
