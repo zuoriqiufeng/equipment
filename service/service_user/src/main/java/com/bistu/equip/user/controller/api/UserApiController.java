@@ -45,7 +45,7 @@ public class UserApiController {
 	public Result login(@RequestParam("openid") String openid) {
 		// 通过openid查询
 		String name;
-		UserInfo userInfo = userInfoService.selectWxInfoOpenId(openid);
+		UserInfo userInfo = userInfoService.selectWxInfoOpenIdApplet(openid);
 		HashMap<String, String> result = new HashMap();
 		if(userInfo == null) {
 			userInfo = new UserInfo();

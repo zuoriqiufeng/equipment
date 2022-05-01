@@ -1,12 +1,8 @@
-package com.bistu.equip.user.utils;
+package com.bistu.equip.princi.utils;
 
-import com.bistu.equip.user.service.UserInfoService;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Dx666
@@ -22,24 +18,20 @@ public class WeChatLoginUtils implements InitializingBean {
 	@Value("${wx.open.app_secret}")
 	private String appSecret;
 	
-	@Value("${wx.open.redirect_url}")
-	private String redirectUrl;
-	
-	@Value("${equip_baseurl}")
-	private String baseUrl;
+	@Value("${template_id}")
+	private String templateId;
 	
 	
 	public static String WX_OPEN_APP_ID;
 	public static String WX_OPEN_APP_SECRET;
-	public static String WX_OPEN_REDIRECT_URL;
-	public static String EQUIP_BASE_URL;
+	public static String TEMPLATE_ID;
+	
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		WX_OPEN_APP_ID = appId;
 		WX_OPEN_APP_SECRET = appSecret;
-		WX_OPEN_REDIRECT_URL = redirectUrl;
-		EQUIP_BASE_URL = baseUrl;
+		TEMPLATE_ID = templateId;
 	}
 	
 }

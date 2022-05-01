@@ -30,7 +30,7 @@ public class UserInfo extends BaseEntity {
 	
 	@ApiModelProperty("微信扫码编号")
 	@TableField("open_id_app")
-	private String openIdIdApp;
+	private String openIdApp;
 
 	@ApiModelProperty("微信开放平台UnionID")
 	@TableField("union_id")

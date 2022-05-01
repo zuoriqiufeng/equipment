@@ -84,10 +84,12 @@ public class PrincipalApiController {
 		return Result.ok();
 	}
 	
-	@ApiOperation("设备归还接口")
+	@ApiOperation("设备归还接x口")
 	@PostMapping("auth/return/{id}")
 	public Result returnEquip(@PathVariable Long id,
 	                          @RequestBody PrincipalReturnVo principalReturnVo) {
+		
+		System.out.println(id);
 		log.info("设备归还");
 		principalService.returnEquip(principalReturnVo, id);
 		return Result.ok();

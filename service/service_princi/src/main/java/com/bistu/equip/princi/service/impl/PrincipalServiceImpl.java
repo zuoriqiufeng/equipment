@@ -198,7 +198,10 @@ public class PrincipalServiceImpl extends ServiceImpl<PrincipalMapper, Principal
 		PrincipalInfoFront principalInfoFront = principalFrontService.getByPrincipalId(id);
 		Sign sign = signService.getByPrincipalId(id);
 		ReturnRecord returnRecord = returnRecordService.getByPrincipalId(id);
-		BeanUtils.copyProperties(principalReturnVo,principalInfo);
+//		BeanUtils.copyProperties(principalReturnVo, principalInfo);
+		
+		principalInfo.setReHuman(principalReturnVo.getReHuman());
+		principalInfo.setReUsername(principalReturnVo.getReUsername());
 		
 		// 设置返还时间和状态
 		principalInfo.setActualReturnTime(new Date());

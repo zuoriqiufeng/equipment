@@ -60,13 +60,13 @@ public class WeiXinApiController {
 			if(openId == null || session_key == null) {
 				return Result.fail("errcode: " + errcode + ";errmsg: " + errmsg);
 			}
-			UserInfo userInfo = userInfoService.selectWxInfoOpenId(openid);
+			UserInfo userInfo = userInfoService.selectWxInfoOpenIdApplet(openid);
 			// 存储返回信息
 			HashMap<String, String> map = new HashMap<>();
 			// 表示用户第一次登陆
 			if(userInfo == null) {
 				userInfo = new UserInfo();
-				userInfo.setOpenId(openId);
+				userInfo.setOpenIdApplet(openId);
 				userInfo.setLastLoginTime(new Date());
 				userInfo.setCreateTime(new Date());
 				userInfo.setUpdateTime(new Date());

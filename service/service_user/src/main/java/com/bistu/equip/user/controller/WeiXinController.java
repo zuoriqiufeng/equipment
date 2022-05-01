@@ -1,16 +1,24 @@
 package com.bistu.equip.user.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bistu.equip.common.helper.JwtHelper;
 import com.bistu.equip.common.result.Result;
+import com.bistu.equip.model.user.UserInfo;
+import com.bistu.equip.user.service.UserInfoService;
 import com.bistu.equip.user.utils.HttpClientUtils;
 import com.bistu.equip.user.utils.WeChatLoginUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,12 +27,14 @@ import java.util.Map;
  * @Description
  * @Date 2021/11/8 - 8:18
  */
-@RestController
+@Controller
 @RequestMapping("/admin/user/weixin")
+@ResponseBody // 支持response返回
 public class WeiXinController {
 	
 	
-	
+	@Autowired
+	private UserInfoService userInfoService;
 	/**
 	 * 获取生成二位吗所需要的参数
 	 * @return
@@ -34,13 +44,14 @@ public class WeiXinController {
 		try{
 			Map<String, Object> map = new HashMap<>();
 			map.put("appid", WeChatLoginUtils.WX_OPEN_APP_ID);
-			map.put("scope", "snsap_login");
+			map.put("scope", "snsapi_login");
 			String wxOpenRedirectUrl = WeChatLoginUtils.WX_OPEN_REDIRECT_URL;
 			wxOpenRedirectUrl = URLEncoder.encode(wxOpenRedirectUrl, "utf-8");
 			map.put("redirectUri", wxOpenRedirectUrl);
 			map.put("state", System.currentTimeMillis());
+			System.out.println(map.get("redirectUri"));
 			return Result.ok(map);
-		} catch (UnsupportedEncodingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -53,7 +64,7 @@ public class WeiXinController {
 	 * @return
 	 */
 	@GetMapping("callback")
-	public String callback(String code, String state) {
+	public void callback(String code, String state, HttpServletResponse response) {
 		// 1.获取临时票据code
 		// 2.拿着code 和微信id和密钥，请求微信固定地址，得到两个值
 		// 使用code 和appid以及appscrect 换取access_token
@@ -80,13 +91,54 @@ public class WeiXinController {
 			baseUserInfoUrl = String.format(baseUserInfoUrl, access_token, openid);
 			// 获取到用户信息
 			String resultUserInfoJson = HttpClientUtils.get(baseUserInfoUrl);
+			JSONObject resultInfo = JSONObject.parseObject(resultUserInfoJson);
 			
+			// 获取到解析后的用户信息
+			// 昵称
+			String nickname = resultInfo.getString("nickname");
+			// unionid
+			String unionId = resultInfo.getString("unionid");
+			UserInfo userInfo = userInfoService.selectWxInfoUnionId(unionId);
+			// 用户第一次登录
+			if(userInfo == null) {
+				userInfo = new UserInfo();
+				userInfo.setUnionId(unionId);
+				userInfo.setNickName(nickname);
+				userInfo.setOpenIdApp(openid);
+				userInfo.setLastLoginTime(new Date());
+				userInfo.setCreateTime(new Date());
+				userInfo.setUpdateTime(new Date());
+				userInfoService.save(userInfo);
+			}
+			// 存储返回信息
 			
-			
-			return null;
+			HashMap<String, String> map = new HashMap<>();
+			map.put("openid", openid);
+			String name = userInfo.getName();
+			if(StringUtils.isEmpty(name)) {
+				map.put("name", "bistu_" + new Date().getDate());
+			}
+			// 生成token字符串
+			String token = JwtHelper.createToken(userInfo.getId(), map.get("name"));
+			map.put("token", token);
+			response.sendRedirect( WeChatLoginUtils.EQUIP_BASE_URL
+					+ "/#/callback?token="
+					+ map.get("token")
+					+ "&openid="
+					+ map.get("openid")
+					+ "&name="
+					+ URLEncoder.encode(map.get("name"), "utf-8"));
+//			return "redirect:"
+//					+ WeChatLoginUtils.EQUIP_BASE_URL
+//					+ "/#/users?token="
+//					+ map.get("token")
+//					+ "&openid="
+//					+ map.get("openid")
+//					+ "&name="
+//					+ URLEncoder.encode(map.get("name"), "utf-8");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+//			return null;
 		}
 	}
 }

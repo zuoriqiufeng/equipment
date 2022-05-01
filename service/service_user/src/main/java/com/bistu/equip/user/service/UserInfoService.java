@@ -22,7 +22,7 @@ public interface UserInfoService  extends IService<UserInfo> {
 	// 分页查询用户
 	IPage<UserInfo> selectPage(Page<UserInfo> pageParam, UserInfoQueryVo userInfoQueryVo);
 	
-	// 通过openid查询用户信息
+	// 通过小程序openid查询用户信息
 	UserInfo selectWxInfoOpenIdApplet(String openIdApplet);
 	
 	// 用户认证接口
@@ -30,4 +30,11 @@ public interface UserInfoService  extends IService<UserInfo> {
 	
 	// 批量导出用户信息
 	void exportUserData(HttpServletResponse response);
+	
+	// 通过网站应用openid查询用户信息
+	UserInfo selectWxInfoOpenIdApp(String openIdApp);
+	
+	
+	// 通过unionId查询用户信息
+	UserInfo selectWxInfoUnionId(String unionId);
 }

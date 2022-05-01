@@ -39,6 +39,7 @@ public class ReturnRecordServiceImpl  extends ServiceImpl<ReturnRecordMapper, Re
 		QueryWrapper<ReturnRecord> wrapper = new QueryWrapper<>();
 		wrapper.le("return_count", 3);
 		wrapper.eq("status", 1);
+		System.out.println(baseMapper);
 		List<ReturnRecord> returnRecords = baseMapper.selectList(wrapper);
 		return returnRecords;
 	}

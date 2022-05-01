@@ -128,6 +128,20 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 	
 	}
 	
+	@Override
+	public UserInfo selectWxInfoOpenIdApp(String openIdApp) {
+		QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
+		wrapper.eq("open_id_applet", openIdApp);
+		return baseMapper.selectOne(wrapper);
+	}
+	
+	@Override
+	public UserInfo selectWxInfoUnionId(String unionId) {
+		QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
+		wrapper.eq("union_id", unionId);
+		return baseMapper.selectOne(wrapper);
+	}
+	
 	
 	/**
 	 * 处理一下用户信息

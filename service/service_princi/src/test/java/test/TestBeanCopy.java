@@ -1,6 +1,7 @@
 package test;
 
 import com.bistu.equip.model.principal.PrincipalInfo;
+import com.bistu.equip.model.template.WxMssVo;
 import com.bistu.equip.vo.principal.PrincipalBorrowVo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
@@ -31,4 +32,10 @@ public class TestBeanCopy {
 		BeanUtils.copyProperties(principalBorrowVo, principalInfo);
 		System.out.println(principalInfo);
 	}
+	
+	public void test2() {
+		WxMssVo wxMssVo = new WxMssVo();
+		
+	}
+	
 }

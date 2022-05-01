@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bistu.equip.common.helper.JwtHelper;
 import com.bistu.equip.common.result.Result;
 
+import com.bistu.equip.common.utils.AuthContextHolder;
 import com.bistu.equip.model.user.UserInfo;
 import com.bistu.equip.model.user.userUpdate.UserUpdateModel;
 import com.bistu.equip.user.service.UserInfoService;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
@@ -126,6 +128,13 @@ public class UserController {
 		log.info("导出设备数据......");
 		userInfoService.exportUserData(response);
 		
+	}
+	
+	@ApiOperation("根据id获取用户据信息")
+	@GetMapping("getUserInfo")
+	public UserInfo getUserInfo(Long id) {
+		UserInfo userInfo = userInfoService.getById(id);
+		return userInfo;
 	}
 	
 }
